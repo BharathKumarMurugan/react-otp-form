@@ -9,20 +9,32 @@ function OtpForm({otpLen = 4, onOtpSubmit = () => {}}) {
         // take only one input from the field
         newOtp[index] = value.substring(value.length - 1);
 
-        // jump to next field if the current field is not empty
+        // jump to next field if the current field is not empty & stop after last field
         if (value && index < otpLen - 1 && otpRef.current[index + 1]) {
             otpRef.current[index + 1].focus();
         }
         setOtp(newOtp);
         // submit otp
         const finalOtp = newOtp.join("");
-        console.log(newOtp, finalOtp);
         if (finalOtp.length === otpLen) {
             onOtpSubmit(finalOtp);
         }
-    }
-    const handleClick = (e) => {}
-    const handleKeyDown = (e) => {}
+    };
+    const handleClick = (index) => {
+        // move insertion point to the right most to enter a new value
+        otpRef.current[index].setSelectionRange(1, 1);
+    };
+    const handleKeyDown = (index, e) => {
+        // remove previous field element on pressing backspace
+        if (
+            e.key === "Backspace" &&
+            !otp[index] &&
+            index > 0 &&
+            otpRef.current[index - 1]
+        ) {
+            otpRef.current[index - 1].focus();
+        }
+    };
     const [otp, setOtp] = useState(new Array(otpLen).fill(""));
     const otpRef = useRef([]);
 
